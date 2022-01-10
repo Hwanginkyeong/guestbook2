@@ -1,16 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List" %>
-<%@ page import="com.javaex.dao.GuestbookDao" %>
 <%@ page import="com.javaex.vo.GuestbookVo" %>
 
 <% 
 
-	GuestbookDao guestbookDao = new GuestbookDao();
-	List<GuestbookVo> guestbookList = guestbookDao.getList(); 
-	
-	//테스트 
-	System.out.println(guestbookList.toString()); 
+	List<GuestbookVo> guestList = (List<GuestbookVo>) request.getAttribute("gList");
 
 %>
 
@@ -23,7 +18,9 @@
 </head>
 <body>
 		<!--  등록폼영역 -->
-		<form action="./add.jsp" method="get">
+		<form action="/guestbook2/gbc" method="get">
+		<input type="hidden" name="action" value="add">
+
 		
 			<table border="1" width="500px">
 				<tr>
@@ -39,7 +36,7 @@
 				</tr>
 				<tr>
 					<td colspan="4">
-						<button type="submit" >글작성</button>
+						<button type="submit" >확인</button>
 					</td>
 				</tr>
 			</table>
@@ -50,27 +47,26 @@
 		
 		<!--  리스트영역 -->
 		<%
-		for(int i=0; i<guestbookList.size(); i++){
+		for (int i = 0; i < guestList.size(); i++) {
+			GuestbookVo vo = guestList.get(i);
 		%>
-				
-			<table border="1" width="500px">
-				<tr>
-					<td><%=guestbookList.get(i).getNo() %></td>
-					<td><%=guestbookList.get(i).getName() %></td>
-					<td><%=guestbookList.get(i).getRegDate() %></td>
-					<td><a href="./deleteForm.jsp?no=<%=guestbookList.get(i).getNo()%>&password=<%=guestbookList.get(i).getPassword()%>">[삭제]</a></td>
-				</tr>
-				<tr>
-					<td colspan="4">
-						<%=guestbookList.get(i).getContent() %>
-					</td>	
-				</tr>
-			</table>
-			<br>
-			
+	
+		<table border="1" width="500px">
+			<tr>
+				<td><%=vo.getNo()%></td>
+				<td><%=vo.getName()%></td>
+				<td><%=vo.getRegDate()%></td>
+				<td><a href="/guestbook2/gbc?action=deleteform&no=<%=vo.getNo()%>">삭제</a></td>
+			</tr>
+			<tr>
+				<td colspan="4"><%=vo.getContent()%></td>
+			</tr>
+		</table>
+		<br>
+	
 		<%
 		}
-		%>	
+		%>
 		<!--  /리스트영역 -->
 		
 		

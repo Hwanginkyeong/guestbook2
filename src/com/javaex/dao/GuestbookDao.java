@@ -62,7 +62,7 @@ public class GuestbookDao {
 		}
 		
 		
-		//getList() 시작 
+		//List 
 		public List<GuestbookVo> getList() {
 
 				List<GuestbookVo> guestbookList = new ArrayList<GuestbookVo>();
@@ -113,28 +113,20 @@ public class GuestbookDao {
 			
 			return guestbookList;
 				
-		}//getList() 끝 
+		}//List 끝 
 		
-		//등록
+		//insert
 		public int insert(GuestbookVo vo) {
 			
 			int count = 0;
-
-			getConnection();
+			this.getConnection();
 			
 			try {
 				// 3. SQL문 준비 / 바인딩 / 실행
-				String query = " insert into guestbook " + 
-				               "        (no, " + 
-				               "         name, " +
-				               "         password, " +
-				               "         content, " +
-				               "         reg_date) " +
-				               " values (seq_guestbook_no.nextval, " +
-				               "         ?, " +
-				               "         ?, " +
-				               "         ?, " +
-				               "         sysdate) " ;	
+				String query = "";
+				query += "insert into guestbook ";
+				query += " values(seq_guestbook_no.nextval, ?, ?, ?, sysdate)";
+
 				
 				pstmt = conn.prepareStatement(query);
 
@@ -151,14 +143,13 @@ public class GuestbookDao {
 				System.out.println("error:" + e);
 			} 
 			
-			close();
-
+			this.close();
 			return count;
 		}
 	
 
-		// 사람 삭제
-		public int delete(GuestbookVo vo) {
+		//delete
+		public int delete(GuestbookVo gusetbookvo) {
 			
 				int count = 0;
 				
@@ -174,8 +165,8 @@ public class GuestbookDao {
 					
 					pstmt = conn.prepareStatement(query); // 쿼리로 만들기
 		
-					pstmt.setInt(1, vo.getNo());// ?(물음표) 중 1번째, 순서중요
-					pstmt.setString(2, vo.getPassword());
+					pstmt.setInt(1, gusetbookvo.getNo());// ?(물음표) 중 1번째, 순서중요
+					pstmt.setString(2, gusetbookvo.getPassword());
 		
 					count = pstmt.executeUpdate(); // 쿼리문 실행
 		
@@ -188,6 +179,60 @@ public class GuestbookDao {
 		
 				close();
 				return count;
+		}
+		
+		//select
+		public GuestbookVo select(int index) {
+			
+			this.getConnection();
+			GuestbookVo guestbookVo = new GuestbookVo();
+			
+			// 3. SQL문 준비 / 바인딩 / 실행
+			
+			try {	
+				//문자열준비
+				String query = "";
+				query += " SELECT no, ";
+				query += " 		  name, ";
+				query += " 		  password, ";
+				query += " 		  content, ";
+				query += " 		  to_char(reg_date, 'yyyy-mm-dd hh24:mi:ss') reg_date ";
+				query += " FROM guestbook ";
+				query += " WHERE no like ? ";
+				
+				//쿼리문 만들기
+				pstmt = conn.prepareStatement(query);
+				
+				//바인딩
+				pstmt.setInt(1, index );
+							
+				//실행
+				rs = pstmt.executeQuery();
+					
+			// 4.결과처리
+				
+				while(rs.next()) {
+					int no = rs.getInt("no");
+					String name = rs.getString("name");
+					String password = rs.getString("password");
+					String content = rs.getString("content");
+					String regDate = rs.getString("reg_date");
+					
+					guestbookVo.setNo(no);
+					guestbookVo.setName(name);
+					guestbookVo.setPassword(password);
+					guestbookVo.setContent(content);
+					guestbookVo.setRegDate(regDate);
+				}
+				
+			} catch (SQLException e) {
+			System.out.println("error:" + e);
 			}
+			
+			this.close();
+					
+			return guestbookVo;
+		
+	}
 
 }

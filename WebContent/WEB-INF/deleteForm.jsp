@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.javaex.dao.GuestbookDao" %>    
-<%@ page import="com.javaex.vo.GuestbookVo" %>
 
 
 <%
+	String stringNo = (String)request.getAttribute("stringNo");
 	int no =  Integer.parseInt(request.getParameter("no"));
 	System.out.println(no);
 %>
@@ -18,13 +17,14 @@
 <body>
 	
 		<br>
-		<form action="./delete.jsp" method="get">
-		        <input  type="hidden" name="no" value="<%=no%>"> 
-	         	비밀번호 <input  type="password" name="password" value=""> 
-			    <button type="submit"> 확인 </button>
-		</form>
+		<form action="/guestbook2/gbc" method="get">	
+				비밀번호 <input type="password" name="password" values="">
+				<input type="text" name="action" value="delete">
+				<input type="text" name="no" value="<%=no%>">
+				<button type="submit">확인</button>
+	</form>
 		<br>
-		<a href="./addList.jsp">메인으로 돌아가기</a>
+		<a href="/guestbook2/gbc?action=addlist">메인으로 돌아가기</a>
 		
 </body>
 </html>

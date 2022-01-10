@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.javaex.dao.GuestbookDao;
 import com.javaex.vo.GuestbookVo;
 
-
 @WebServlet("/gbc")
 public class GuestbookController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -22,51 +21,65 @@ public class GuestbookController extends HttpServlet {
    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//System.out.println("PhonebookController"); //콘솔에서 실행되는 거 확인 가능
+		System.out.println("GuestbookController");
+
+		GuestbookDao guestbookDao = new GuestbookDao();
+		List<GuestbookVo> guestList = guestbookDao.getList();
+
+		String action = request.getParameter("action");
 		
-		//입력한 파라미터에 따라 꺼내줘야 함 
-		String act = request.getParameter("action");
 		
-		//test
-		System.out.println(act);
-		
-		if("addList".equals(act)) {
-			
-			System.out.println("action=addList");
-			
-			List<GuestbookVo> gbList = new GuestbookDao().getList();
-			
-			request.setAttribute("gList", gbList );
-			
+		if ("addlist".equals(action)) {
+			System.out.println("action=addlist");
+
+			request.setAttribute("gList", guestList);
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/addList.jsp");
-				
-		}else if("deleteForm".equals(act)) {
-			System.out.println("action=deleteForm");
-			System.out.println("게스트 삭제 폼");
+			rd.forward(request, response);
+
+		} else if ("add".equals(action)) {
+			System.out.println("action=add");
+
+			String name = request.getParameter("name");
+			String password = request.getParameter("password");
+			String content = request.getParameter("content");
+
+			GuestbookVo vo = new GuestbookVo(name, password, content);
+			int count = guestbookDao.insert(vo);
+
+			System.out.println(count + "건 등록되었습니다");
+			response.sendRedirect("/guestbook2/gbc?action=addlist");
 			
+		}else if ("deleteform".equals(action)) {
+			System.out.println("action=deleteform");
+
+			String stringNo = request.getParameter("no");
+			request.setAttribute("stringNo", stringNo);
+
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/deleteForm.jsp");
 			rd.forward(request, response);
-		
-		}else if("add".equals(act)) {
-			System.out.println("action=add");
-			
-			
+
+		} else if ("delete".equals(action)) {
+			System.out.println("action=delete");
+
+			int no = Integer.parseInt(request.getParameter("no"));
+			String password = request.getParameter("password");
+
+			GuestbookVo vo = new GuestbookVo();
+			vo.setNo(no);
+			vo.setPassword(password);
+			int count = guestbookDao.delete(vo);
+
+			System.out.println(count + "건 삭제되었습니다.");
+			response.sendRedirect("/guestbook2/gbc?action=addlist");
+
+		} else {
+			System.out.println("파라미터 없음");
 		}
 		
-		
-		
-		
-		
-		
-		
+	
 		
 	}
 
-	
-	
-	
-	
-	
 	
 	
 	
