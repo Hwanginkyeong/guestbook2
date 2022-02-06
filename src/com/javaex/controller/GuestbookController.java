@@ -21,7 +21,7 @@ public class GuestbookController extends HttpServlet {
    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		System.out.println("GuestbookController");
+		//System.out.println("GuestbookController");
 
 		GuestbookDao guestbookDao = new GuestbookDao();
 		List<GuestbookVo> guestList = guestbookDao.getList();
@@ -36,6 +36,8 @@ public class GuestbookController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/addList.jsp");
 			rd.forward(request, response);
 
+		
+		
 		} else if ("add".equals(action)) {
 			System.out.println("action=add");
 
@@ -49,6 +51,8 @@ public class GuestbookController extends HttpServlet {
 			System.out.println(count + "건 등록되었습니다");
 			response.sendRedirect("/guestbook2/gbc?action=addlist");
 			
+		
+		
 		}else if ("deleteform".equals(action)) {
 			System.out.println("action=deleteform");
 
@@ -58,6 +62,8 @@ public class GuestbookController extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/deleteForm.jsp");
 			rd.forward(request, response);
 
+		
+		
 		} else if ("delete".equals(action)) {
 			System.out.println("action=delete");
 
@@ -72,6 +78,8 @@ public class GuestbookController extends HttpServlet {
 			System.out.println(count + "건 삭제되었습니다.");
 			response.sendRedirect("/guestbook2/gbc?action=addlist");
 
+		
+		
 		} else {
 			System.out.println("파라미터 없음");
 		}
